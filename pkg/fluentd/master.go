@@ -111,7 +111,7 @@ data:
       remove_prefix kubernetes
       <template>
         time_slice_format %Y%m%d
-        path /var/log/bootkube/${tag}.*.log
+        path /var/log/log-collector/container.${tag}.*.log
         append true
         flush_interval 60s
         flush_at_shutdown true
@@ -124,7 +124,7 @@ data:
       remove_prefix service
       <template>
         time_slice_format %Y%m%d
-        path /var/log/bootkube/${tag}.*.log
+        path /var/log/log-collector/service.${tag}.*.log
         append true    
         flush_interval 60s
         flush_at_shutdown true
