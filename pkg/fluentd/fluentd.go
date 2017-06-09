@@ -84,10 +84,17 @@ func GetNodeAddressWithMaster(client kubernetes.Interface, namespace string) (st
 		if addr.Type == v1.NodeExternalIP {
 			host = addr.Address
 		}
-		if addr.Type == "LegacyHostIP" {
-			host = addr.Address
+
+	}
+	if host == "" {
+		// try finding "LegacyHostIP"
+		for _, addr := range n.Status.Addresses {
+			if addr.Type == "LegacyHostIP" {
+				host = addr.Address
+			}
 		}
 	}
+
 	if host == "" {
 		return "", fmt.Errorf("could not get external node IP for node: %s", nodeName)
 	}
