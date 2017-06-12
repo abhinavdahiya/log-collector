@@ -76,6 +76,9 @@ data:
   output.conf: |-
     <match **>
       @type forward
+      buffer_type file
+      buffer_path /var/log/fluentd-worker/outward.*.buffer
+      flush_interval 10s
       <server>
         name fluentd-master
         host fluentd-master

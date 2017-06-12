@@ -113,7 +113,7 @@ data:
         time_slice_format %Y%m%d
         path /var/log/log-collector/container.${tag}.*.log
         append true
-        flush_interval 60s
+        flush_interval 10s
         flush_at_shutdown true
       </template>
     </match>
@@ -126,7 +126,7 @@ data:
         time_slice_format %Y%m%d
         path /var/log/log-collector/service.${tag}.*.log
         append true    
-        flush_interval 60s
+        flush_interval 10s
         flush_at_shutdown true
       </template>
     </match>
