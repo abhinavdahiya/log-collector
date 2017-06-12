@@ -1,16 +1,18 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"os"
 )
 
 func TestS3Output(t *testing.T) {
-	// empty := func() error {
-	// 	return fmt.Errorf("format string")
-	// }
-	// retry(10, time.Second*10, empty)
+	empty := func() error {
+		return fmt.Errorf("format string")
+	}
+	retry(10, time.Second*10, empty)
 
 	t.Run("Pod", testS3Pod)
 	t.Run("Service", testS3Service)

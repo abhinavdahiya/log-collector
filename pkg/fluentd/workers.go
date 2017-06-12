@@ -86,7 +86,7 @@ data:
     <source>
       @type tail
       path /var/log/containers/*.log
-      pos_file /fluentd/log/fluentd-containers.log.pos
+      pos_file /var/log/fluentd-containers.log.pos
       time_format %Y-%m-%dT%H:%M:%S.%NZ
       tag reform.*
       format json
@@ -125,7 +125,7 @@ data:
     <source>
       type systemd
       filters [{ "_SYSTEMD_UNIT": "docker.service" }]
-      pos_file /fluentd/log/fluentd-docker.pos
+      pos_file /var/log/fluentd-docker.pos
       read_from_head true
       tag service.docker
     </source>
@@ -133,7 +133,7 @@ data:
     <source>
       type systemd
       filters [{ "_SYSTEMD_UNIT": "kubelet.service" }]
-      pos_file /fluentd/log/fluentd-kubelet.pos
+      pos_file /var/log/fluentd-kubelet.pos
       read_from_head true
       tag service.kubelet
     </source>

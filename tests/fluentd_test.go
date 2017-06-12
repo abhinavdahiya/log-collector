@@ -21,9 +21,17 @@ func TestFluentdMasterAddress(t *testing.T) {
 	for _, node := range nl.Items {
 		var h string
 		for _, addr := range node.Status.Addresses {
-			if addr.Type == v1.NodeExternalIP || addr.Type == "LegacyHostIP" {
+			if addr.Type == v1.NodeExternalIP {
 				h = addr.Address
 				break
+			}
+		}
+		if h == "" {
+			for _, addr := range node.Status.Addresses {
+				if addr.Type == "LegacyHostIP" {
+					h = addr.Address
+					break
+				}
 			}
 		}
 		if h == "" {

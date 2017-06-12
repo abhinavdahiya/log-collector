@@ -55,9 +55,8 @@ func TestMain(m *testing.M) {
 	}
 
 	cr = collector.New(&collector.Config{
-		RemoteKeyFile: "/home/abhinav/.vagrant.d/insecure_private_key",
-		K8sClient:     client,
-		Namespace:     namespace,
+		K8sClient: client,
+		Namespace: namespace,
 	})
 
 	if err := cr.Start(); err != nil {

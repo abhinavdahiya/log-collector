@@ -1,13 +1,20 @@
 package tests
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestLocalOutput(t *testing.T) {
+	empty := func() error {
+		return fmt.Errorf("format string")
+	}
+	retry(10, time.Second*10, empty)
+
 	t.Run("Pod", testPod)
 	t.Run("Service", testService)
 }
