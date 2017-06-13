@@ -200,6 +200,7 @@ spec:
           name: fluentd-master
       nodeSelector:
         node-role.kubernetes.io/master: ""
+        log-collector.github.com/fluentd-master: ""
 `)
 
 var masterSvc = []byte(`apiVersion: v1

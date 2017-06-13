@@ -78,16 +78,15 @@ func (cr *Collector) Start() error {
 		return err
 	}
 
+	host, err := fluentd.GetNodeAddressWithMaster(cr.k8s, cr.namespace)
+	if err != nil {
+		return err
+	}
+	cr.scpConfig.Host = host
 	return nil
 }
 
 func (cr *Collector) CollectPodLogs(pod string) ([]string, error) {
-	host, err := fluentd.GetNodeAddressWithMaster(cr.k8s, cr.namespace)
-	if err != nil {
-		return nil, err
-	}
-
-	cr.scpConfig.Host = host
 	scp, err := scp.NewClient(cr.scpConfig)
 	if err != nil {
 		return nil, err
@@ -104,12 +103,6 @@ func (cr *Collector) CollectPodLogs(pod string) ([]string, error) {
 }
 
 func (cr *Collector) CollectServiceLogs(service string) ([]string, error) {
-	host, err := fluentd.GetNodeAddressWithMaster(cr.k8s, cr.namespace)
-	if err != nil {
-		return nil, err
-	}
-
-	cr.scpConfig.Host = host
 	scp, err := scp.NewClient(cr.scpConfig)
 	if err != nil {
 		return nil, err

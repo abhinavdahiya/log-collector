@@ -14,7 +14,7 @@ func TestFluentdMasterAddress(t *testing.T) {
 		t.Fatalf("error getting master's node address: %v", err)
 	}
 
-	nl, err := client.CoreV1().Nodes().List(metav1.ListOptions{LabelSelector: "node-role.kubernetes.io/master="})
+	nl, err := client.CoreV1().Nodes().List(metav1.ListOptions{LabelSelector: "log-collector.github.com/fluentd-master"})
 	if err != nil || len(nl.Items) == 0 {
 		t.Fatalf("error getting master nodes: %v", err)
 	}

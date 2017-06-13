@@ -10,6 +10,20 @@ import (
 )
 
 func CreateAssets(client kubernetes.Interface, namespace string) error {
+	// tag one of the masters
+	nl, err := client.CoreV1().Nodes().List(metav1.ListOptions{LabelSelector: "node-role.kubernetes.io/master="})
+	if err != nil || len(nl.Items) == 0 {
+		return fmt.Errorf("couldn't find master node %v", err)
+	}
+
+	n := nl.Items[0]
+	n.ObjectMeta.Labels["log-collector.github.com/fluentd-master"] = ""
+
+	if _, err := client.CoreV1().Nodes().Update(&n); err != nil {
+		return fmt.Errorf("couldn't tag one of the master nodes %v", err)
+	}
+
+	// create assests
 	if err := createMasterCfg(client, namespace); err != nil {
 		return fmt.Errorf("error creating fluentd asset %v", err)
 	}
@@ -60,6 +74,18 @@ func DeleteAssets(client kubernetes.Interface, namespace string) error {
 
 	if err := deleteWorkerDs(client, namespace); err != nil {
 		return fmt.Errorf("error deleting fluentd asset %v", err)
+	}
+
+	nl, err := client.CoreV1().Nodes().List(metav1.ListOptions{LabelSelector: "log-collector.github.com/fluentd-master="})
+	if err != nil || len(nl.Items) == 0 {
+		return fmt.Errorf("couldn't find master node %v", err)
+	}
+
+	n := nl.Items[0]
+	delete(n.ObjectMeta.Labels, "log-collector.github.com/fluentd-master")
+
+	if _, err := client.CoreV1().Nodes().Update(&n); err != nil {
+		return fmt.Errorf("couldn't tag one of the master nodes %v", err)
 	}
 
 	return nil
