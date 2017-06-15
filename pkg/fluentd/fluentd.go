@@ -147,12 +147,16 @@ func retry(attempts int, delay time.Duration, f func() error) error {
 
 func checkmaster(client kubernetes.Interface, namespace string) func() error {
 	return func() error {
-		d, err := client.ExtensionsV1beta1().Deployments(namespace).Get("fluentd-master", metav1.GetOptions{})
-		if err != nil {
-			return fmt.Errorf("fluentd-master not found %v", err)
+		l, err := client.CoreV1().Pods(namespace).List(metav1.ListOptions{LabelSelector: "k8s-app=fluentd-master"})
+		if err != nil || len(l.Items) == 0 {
+			return fmt.Errorf("pod not yet running: %v", err)
 		}
-		if d.Status.Replicas != d.Status.AvailableReplicas {
-			return fmt.Errorf("fluentd-master has not succeded: replicas running %d required %d", d.Status.AvailableReplicas, d.Status.Replicas)
+
+		// take the first pod
+		p := &l.Items[0]
+
+		if p.Status.Phase != v1.PodRunning {
+			return fmt.Errorf("pod not yet running: %v", p.Status.Phase)
 		}
 		return nil
 	}
@@ -160,12 +164,16 @@ func checkmaster(client kubernetes.Interface, namespace string) func() error {
 
 func checkworker(client kubernetes.Interface, namespace string) func() error {
 	return func() error {
-		ds, err := client.ExtensionsV1beta1().DaemonSets(namespace).Get("fluentd-worker", metav1.GetOptions{})
-		if err != nil {
-			return fmt.Errorf("fluentd-worker not found %v", err)
+		l, err := client.CoreV1().Pods(namespace).List(metav1.ListOptions{LabelSelector: "k8s-app=fluentd-worker"})
+		if err != nil || len(l.Items) == 0 {
+			return fmt.Errorf("pod not yet running: %v", err)
 		}
-		if ds.Status.DesiredNumberScheduled != ds.Status.NumberReady {
-			return fmt.Errorf("fluentd-worker has not succeded: replicas running %d required %d", ds.Status.NumberReady, ds.Status.DesiredNumberScheduled)
+
+		// take the first pod
+		p := &l.Items[0]
+
+		if p.Status.Phase != v1.PodRunning {
+			return fmt.Errorf("pod not yet running: %v", p.Status.Phase)
 		}
 		return nil
 	}
